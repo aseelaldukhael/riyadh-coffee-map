@@ -1,0 +1,13 @@
+data/bronze/*
+!data/bronze/README.md
+data/silver/*
+!data/silver/quality_report.json
+data/gold/*
+!data/gold/district_summary.csv
+!data/gold/gold_report.json
+data/quality/
+logs/
+__pycache__/
+*.pyc
+*.parquet
+*.state

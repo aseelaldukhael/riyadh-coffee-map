@@ -1,0 +1,12 @@
+{
+  "osm_rows_bronze": 376,
+  "overture_cafe_rows_bronze": 3358,
+  "rows_before_clean": 3734,
+  "dropped_outside_bbox": 0,
+  "dropped_low_confidence": 239,
+  "dropped_no_name": 72,
+  "rows_after_clean": 3423,
+  "duplicates_removed": 99,
+  "rows_in_both_sources": 41,
+  "silver_rows_final": 3324
+}

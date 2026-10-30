@@ -1,0 +1,12 @@
+{
+  "silver_rows": 3324,
+  "dropped_non_cafe_categories": 10,
+  "districts_in_region": 711,
+  "cafes_matched_to_district": 3295,
+  "cafes_unmatched": 19,
+  "detected_riyadh_city_id": 3,
+  "cafes_outside_riyadh_city_dropped": 44,
+  "gold_cafes_final": 3270,
+  "cafes_in_non_district_polygons": 102,
+  "districts_with_cafes": 143
+}
