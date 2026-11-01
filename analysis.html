@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riyadh Cafe Competition Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6EFE5;--card:#FFFDF9;--ink:#2B1B14;--muted:#7A6657;--line:#E6D8C6;--brown:#6F4E37;--car:#C68B59;--tan:#D3BFA6;--cream:#EFE3D1;--hi:#6F4E37;--mid:#C68B59;--lo:#D9C6AE}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo','Segoe UI',Tahoma,sans-serif;line-height:1.6}
+header{background:#2B1B14;color:#F6EFE5;padding:22px 20px 26px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+header h1{margin:0;font-size:clamp(1.4rem,3.6vw,2rem);font-weight:800;line-height:1.3}
+header p{margin:6px 0 0;color:#D8C4AE;font-size:.98rem}
+header a{color:#E8C9A0}
+#lang{font:inherit;font-weight:700;font-size:.88rem;color:#2B1B14;background:#E8C9A0;border:0;border-radius:999px;padding:6px 16px;cursor:pointer;white-space:nowrap}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 12px}
+.grp{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.grp>span{color:var(--muted);font-size:.85rem;margin-inline-end:4px}
+.chip{font:inherit;font-size:.88rem;font-weight:600;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:5px 13px;border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--car)}
+.chip[aria-pressed=true]{background:var(--brown);border-color:var(--brown);color:#FFF8EE}
+.sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+input[type=search]{font:inherit;font-size:.9rem;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);min-width:170px}
+.main{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.card h2{margin:0 0 2px;font-size:1.05rem}
+.sub{color:var(--muted);font-size:.85rem;margin:0 0 6px}
+svg{display:block;width:100%;height:auto;overflow:visible;direction:ltr}
+svg text{font-family:inherit}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-inline-end:6px;vertical-align:-1px}
+.pl h3{margin:12px 0 4px;font-size:.98rem;display:flex;align-items:center;gap:8px}
+.pl h3 i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.pl .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:5px 8px;border-radius:10px;cursor:pointer;font-size:.92rem}
+.pl .row:hover,.pl .row.sel{background:var(--cream)}
+.pl .row .num{color:var(--muted);font-size:.8rem}
+.pl .row .v{font-weight:700;direction:ltr;text-align:left}
+html[lang=en] .pl .row .v{text-align:right}
+.pl .row .v small{font-weight:400;color:var(--muted);font-size:.76rem;margin-left:10px}
+.pl .sel-box{margin-top:12px;background:#2B1B14;color:#F6EFE5;border-radius:12px;padding:10px 14px;font-size:.9rem}
+.pl .sel-box b{font-size:1.05rem}
+.rank{margin-top:16px}
+.rank .row{display:grid;grid-template-columns:130px 1fr 56px;gap:10px;align-items:center;padding:3px 6px;border-radius:8px;cursor:pointer;font-size:.9rem}
+.rank .row:hover,.rank .row.sel{background:var(--cream)}
+.rank .track{height:12px;background:#F1E7D8;border-radius:6px;overflow:hidden}
+.rank .fill{height:100%;border-radius:6px}
+.rank .val{font-weight:700;direction:ltr;text-align:left}
+html[lang=en] .rank .val{text-align:right}
+.empty{color:var(--muted);padding:30px 0;text-align:center}
+.note{margin:16px 0 40px;color:var(--muted);font-size:.82rem}
+.note details{margin-top:6px}
+.tip{position:fixed;pointer-events:none;background:#2B1B14;color:#F6EFE5;padding:7px 11px;border-radius:10px;font-size:.84rem;line-height:1.5;opacity:0;z-index:10}
+@media(max-width:820px){.main{grid-template-columns:1fr}.sep{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="top"><div>
+<h1 data-i="h1"></h1>
+<p><span data-i="sub"></span> · <a id="maplink" href="https://aseelaldukhael.github.io/riyadh-coffee-map/" target="_blank" rel="noopener noreferrer" data-i="map"></a></p>
+</div><button id="lang" type="button"></button></div></div></header>
+
+<div class="wrap">
+<div class="bar">
+ <div class="grp"><span data-i="size"></span>
+  <button class="chip" data-size="all" aria-pressed="true" data-i="all"></button>
+  <button class="chip" data-size="s" aria-pressed="false" data-i="small" title="&lt; 5 km²"></button>
+  <button class="chip" data-size="m" aria-pressed="false" data-i="medium" title="5–20 km²"></button>
+  <button class="chip" data-size="l" aria-pressed="false" data-i="large" title="&gt; 20 km²"></button></div>
+ <div class="sep"></div>
+ <div class="grp"><span data-i="minc"></span>
+  <button class="chip" data-min="1" aria-pressed="false" data-i="all"></button>
+  <button class="chip" data-min="10" aria-pressed="true">10+</button>
+  <button class="chip" data-min="30" aria-pressed="false">30+</button></div>
+ <div class="sep"></div>
+ <input type="search" id="q" data-ph="search">
+</div>
+
+<div class="main">
+ <div class="card">
+  <h2 data-i="scT"></h2>
+  <p class="sub" data-i="scS"></p>
+  <div id="sc"></div>
+  <div class="legend"><span><i style="background:var(--hi)"></i><span data-i="hi"></span></span><span><i style="background:var(--mid)"></i><span data-i="mid"></span></span><span><i style="background:var(--lo)"></i><span data-i="lo"></span></span></div>
+ </div>
+ <div class="card pl" id="detail"></div>
+</div>
+
+<div class="card rank">
+ <div class="bar" style="margin:0 0 8px"><h2 style="margin:0" data-i="rkT"></h2>
+  <div class="grp">
+   <button class="chip" data-m="d" aria-pressed="true" data-i="mD"></button>
+   <button class="chip" data-m="c" aria-pressed="false" data-i="mC"></button>
+   <button class="chip" data-m="p" aria-pressed="false" data-i="mP"></button>
+   <button class="chip" id="ord" aria-pressed="true"></button></div></div>
+ <div id="list"></div>
+</div>
+
+<div class="note">
+ <span data-i="noteH"></span>
+ <details><summary data-i="how"></summary><ul id="howl"></ul></details>
+ <div style="margin-top:8px">© OpenStreetMap contributors (ODbL) · Overture Maps Places (CDLA Permissive 2.0)</div>
+</div>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+const D={"rows": [{"n": "العليا", "c": 179, "a": 10.89, "d": 16.4, "p": 38.5, "top": [["ستاربكس", 26], ["دانكن", 17], ["دكتور كيف", 5]], "e": "Al Olaya"}, {"n": "العقيق", "c": 108, "a": 8.03, "d": 13.4, "p": 33.3, "top": [["ستاربكس", 13], ["joe the juice", 4], ["دانكن", 4]], "e": "Al Aqeeq"}, {"n": "السليمانية", "c": 91, "a": 8.08, "d": 11.3, "p": 48.4, "top": [["دانكن", 9], ["دكتور كيف", 9], ["ستاربكس", 8]], "e": "Al Sulaimaniyah"}, {"n": "الملقا", "c": 89, "a": 21.95, "d": 4.1, "p": 28.1, "top": [["ستاربكس", 9], ["دانكن", 5], ["عنوان القهوة", 4]], "e": "Al Malqa"}, {"n": "حطين", "c": 84, "a": 18.26, "d": 4.6, "p": 32.1, "top": [["ستاربكس", 11], ["دانكن", 6], ["joe the juice", 2]], "e": "Hiteen"}, {"n": "النرجس", "c": 80, "a": 49.03, "d": 1.6, "p": 28.7, "top": [["ستاربكس", 7], ["عنوان القهوة", 6], ["دانكن", 5]], "e": "Al Narjis"}, {"n": "الصحافة", "c": 76, "a": 7.93, "d": 9.6, "p": 32.9, "top": [["دانكن", 7], ["ستاربكس", 5], ["د كيف", 2]], "e": "Al Sahafah"}, {"n": "قرطبة", "c": 74, "a": 14.12, "d": 5.2, "p": 44.6, "top": [["ستاربكس", 9], ["دانكن", 8], ["عنوان القهوة", 6]], "e": "Qurtubah"}, {"n": "الياسمين", "c": 66, "a": 12.78, "d": 5.2, "p": 30.3, "top": [["ستاربكس", 6], ["دانكن", 3], ["جافا تايم", 2]], "e": "Al Yasmeen"}, {"n": "النخيل", "c": 59, "a": 9.82, "d": 6.0, "p": 40.7, "top": [["ستاربكس", 9], ["دانكن", 7], ["دكتور كيف", 3]], "e": "Al Nakheel"}, {"n": "الربوة", "c": 59, "a": 11.41, "d": 5.2, "p": 50.8, "top": [["ستاربكس", 9], ["دانكن", 8], ["كوستا", 5]], "e": "Ar Rabwah"}, {"n": "الربيع", "c": 58, "a": 5.69, "d": 10.2, "p": 27.6, "top": [["ستاربكس", 9], ["تيم هورتنز", 2], ["عنوان القهوة", 2]], "e": "Ar Rabie"}, {"n": "ظهرة لبن", "c": 57, "a": 38.7, "d": 1.5, "p": 26.3, "top": [["عنوان القهوة", 5], ["ستاربكس", 4], ["mccafe", 2]], "e": "Dhahrat Laban"}, {"n": "الورود", "c": 51, "a": 4.49, "d": 11.4, "p": 33.3, "top": [["ستاربكس", 7], ["دانكن", 5], ["دكتور كيف", 2]], "e": "Al Woroud"}, {"n": "الملك فهد", "c": 49, "a": 4.84, "d": 10.1, "p": 49.0, "top": [["ستاربكس", 8], ["دانكن", 5], ["تيم هورتنز", 3]], "e": "King Fahd"}, {"n": "المحمدية", "c": 48, "a": 4.27, "d": 11.2, "p": 25.0, "top": [["ستاربكس", 4], ["جافا تايم", 2]], "e": "Al Muhammadiyah"}, {"n": "الشهداء", "c": 48, "a": 4.02, "d": 11.9, "p": 37.5, "top": [["دكتور كيف", 4], ["ستاربكس", 4], ["دانكن", 4]], "e": "Al Shohda"}, {"n": "العارض", "c": 48, "a": 67.47, "d": 0.7, "p": 60.4, "top": [["دانكن", 9], ["عنوان القهوة", 6], ["ستاربكس", 6]], "e": "Al Arid"}, {"n": "الريان", "c": 47, "a": 5.99, "d": 7.8, "p": 46.8, "top": [["ستاربكس", 6], ["عنوان القهوة", 4], ["دانكن", 4]], "e": "Al Rayan"}, {"n": "الروضة", "c": 47, "a": 8.77, "d": 5.4, "p": 38.3, "top": [["دانكن", 7], ["ستاربكس", 3], ["عنوان القهوة", 3]], "e": "Al Rawdah"}, {"n": "جامعة الملك سعود", "c": 44, "a": 9.88, "d": 4.5, "p": 47.7, "top": [["ستاربكس", 9], ["دانكن", 6], ["كاريبو", 2]], "e": "King Saud University"}, {"n": "المغرزات", "c": 43, "a": 4.04, "d": 10.6, "p": 39.5, "top": [["ستاربكس", 6], ["دانكن", 4], ["جافا تايم", 2]], "e": "Al Mughrazat"}, {"n": "المونسية", "c": 43, "a": 16.58, "d": 2.6, "p": 51.2, "top": [["ستاربكس", 7], ["دانكن", 6], ["بارنز", 3]], "e": "Al Munisiyah"}, {"n": "الروابي", "c": 42, "a": 7.21, "d": 5.8, "p": 40.5, "top": [["دانكن", 5], ["ستاربكس", 3], ["عنوان القهوة", 2]], "e": "Al Rawabi"}, {"n": "الحمراء", "c": 42, "a": 8.31, "d": 5.1, "p": 35.7, "top": [["ستاربكس", 6], ["دانكن", 5]], "e": "Al Hamra"}, {"n": "القيروان", "c": 41, "a": 75.83, "d": 0.5, "p": 56.1, "top": [["ستاربكس", 10], ["دانكن", 7], ["عنوان القهوة", 2]], "e": "Al Qairawan"}, {"n": "المربع", "c": 40, "a": 4.89, "d": 8.2, "p": 57.5, "top": [["دانكن", 8], ["دكتور كيف", 6], ["ستاربكس", 4]], "e": "Al Murabba"}, {"n": "اليرموك", "c": 38, "a": 9.23, "d": 4.1, "p": 50.0, "top": [["عنوان القهوة", 5], ["ستاربكس", 4], ["دانكن", 4]], "e": "Al Yarmuk"}, {"n": "المصيف", "c": 38, "a": 4.04, "d": 9.4, "p": 44.7, "top": [["ستاربكس", 6], ["دانكن", 5], ["عنوان القهوة", 2]], "e": "Al Maseef"}, {"n": "الندى", "c": 38, "a": 4.02, "d": 9.5, "p": 36.8, "top": [["دانكن", 4], ["ستاربكس", 2]], "e": "Al Nada"}, {"n": "التعاون", "c": 37, "a": 4.03, "d": 9.2, "p": 21.6, "top": [["عنوان القهوة", 3], ["دانكن", 3]], "e": "Al Taawun"}, {"n": "طويق", "c": 36, "a": 60.77, "d": 0.6, "p": 58.3, "top": [["دانكن", 6], ["عنوان القهوة", 4], ["ستاربكس", 3]], "e": "Tuwaiq"}, {"n": "الملك فيصل", "c": 35, "a": 5.19, "d": 6.7, "p": 45.7, "top": [["ستاربكس", 5], ["دانكن", 3], ["bateel international", 2]], "e": "King Faisal"}, {"n": "السويدي الغربي", "c": 35, "a": 5.47, "d": 6.4, "p": 25.7, "top": [["عنوان القهوة", 3]], "e": "West Suwaidi"}, {"n": "المرسلات", "c": 34, "a": 4.11, "d": 8.3, "p": 64.7, "top": [["ستاربكس", 6], ["دانكن", 6], ["دكتور كيف", 5]], "e": "Al Mursalat"}, {"n": "النفل", "c": 33, "a": 4.01, "d": 8.2, "p": 51.5, "top": [["ستاربكس", 9], ["دانكن", 5]], "e": "Al Nafel"}, {"n": "المروج", "c": 33, "a": 4.74, "d": 7.0, "p": 42.4, "top": [["دانكن", 4], ["جافا تايم", 3], ["ستاربكس", 2]], "e": "Al Muruj"}, {"n": "الرحمانية", "c": 32, "a": 3.76, "d": 8.5, "p": 50.0, "top": [["دانكن", 6], ["ستاربكس", 3], ["كوستا", 2]], "e": "Ar Rahmaniyah"}, {"n": "الرمال", "c": 31, "a": 171.03, "d": 0.2, "p": 61.3, "top": [["دانكن", 9], ["عنوان القهوة", 5], ["دكتور كيف", 3]], "e": "Al Rimal"}, {"n": "المعذر", "c": 31, "a": 3.2, "d": 9.7, "p": 61.3, "top": [["ستاربكس", 7], ["دكتور كيف", 6], ["دانكن", 4]], "e": "Al Mathar"}, {"n": "المعذر الشمالي", "c": 30, "a": 3.85, "d": 7.8, "p": 40.0, "top": [["ستاربكس", 5]], "e": "North Mathar"}, {"n": "اشبيلية", "c": 29, "a": 9.42, "d": 3.1, "p": 58.6, "top": [["ستاربكس", 6], ["عنوان القهوة", 4], ["دانكن", 3]], "e": "Ishbiliyah"}, {"n": "النهضة", "c": 29, "a": 10.78, "d": 2.7, "p": 72.4, "top": [["ستاربكس", 6], ["عنوان القهوة", 5], ["دانكن", 4]], "e": "Al Nahdah"}, {"n": "النزهة", "c": 29, "a": 4.12, "d": 7.0, "p": 17.2, "top": [["دانكن", 2], ["ستاربكس", 2]], "e": "Al Nuzha"}, {"n": "صلاح الدين", "c": 28, "a": 3.44, "d": 8.1, "p": 53.6, "top": [["ستاربكس", 4], ["دانكن", 4], ["جافا تايم", 2]], "e": "Salahuddin"}, {"n": "السويدي", "c": 28, "a": 6.22, "d": 4.5, "p": 53.6, "top": [["ستاربكس", 6], ["دانكن", 3], ["دكتور كيف", 2]], "e": "Al Suwaidi"}, {"n": "الغدير", "c": 27, "a": 4.62, "d": 5.8, "p": 14.8, "top": [["دانكن", 2], ["ستاربكس", 2]], "e": "Al Ghadeer"}, {"n": "القدس", "c": 27, "a": 5.25, "d": 5.1, "p": 33.3, "top": [["دانكن", 4], ["عنوان القهوة", 2], ["ستاربكس", 2]], "e": "Al Quds"}, {"n": "الملز", "c": 27, "a": 8.78, "d": 3.1, "p": 59.3, "top": [["دانكن", 6], ["ستاربكس", 4], ["عنوان القهوة", 2]], "e": "Al Malaz"}, {"n": "بدر", "c": 26, "a": 51.05, "d": 0.5, "p": 50.0, "top": [["دانكن", 6], ["ستاربكس", 5], ["دكتور كيف", 2]], "e": "Badr"}, {"n": "الازدهار", "c": 24, "a": 4.02, "d": 6.0, "p": 16.7, "top": [["دانكن", 2]], "e": "Al Ezdihar"}, {"n": "الخليج", "c": 23, "a": 10.37, "d": 2.2, "p": 47.8, "top": [["عنوان القهوة", 4], ["ستاربكس", 3], ["دانكن", 2]], "e": "Al Khaleej"}, {"n": "النسيم الغربي", "c": 23, "a": 12.71, "d": 1.8, "p": 73.9, "top": [["عنوان القهوة", 5], ["دانكن", 4], ["ستاربكس", 2]], "e": "West Naseem"}, {"n": "العزيزية", "c": 22, "a": 20.87, "d": 1.1, "p": 68.2, "top": [["عنوان القهوة", 6], ["دكتور كيف", 3], ["دانكن", 2]], "e": "Al Aziziyah"}, {"n": "الفلاح", "c": 21, "a": 4.02, "d": 5.2, "p": 38.1, "top": [["ستاربكس", 2], ["دانكن", 2], ["دكتور كيف", 2]], "e": "Al Falah"}, {"n": "السفارات", "c": 21, "a": 8.77, "d": 2.4, "p": 57.1, "top": [["دانكن", 4], ["ستاربكس", 2], ["دكتور كيف", 2]], "e": "Assafarat"}, {"n": "ام الحمام الغربي", "c": 19, "a": 3.96, "d": 4.8, "p": 73.7, "top": [["ستاربكس", 4], ["دانكن", 3], ["دكتور كيف", 2]], "e": "West Umm Al Hamam"}, {"n": "الجنادرية", "c": 19, "a": 77.27, "d": 0.2, "p": 52.6, "top": [["دانكن", 5], ["عنوان القهوة", 3]], "e": "Al Janadriyah"}, {"n": "شبرا", "c": 19, "a": 4.69, "d": 4.1, "p": 73.7, "top": [["دانكن", 5], ["ستاربكس", 3], ["دكتور كيف", 2]], "e": "Shubra"}, {"n": "المنار", "c": 18, "a": 4.15, "d": 4.3, "p": 33.3, "top": [["عنوان القهوة", 3]], "e": "Al Manar"}, {"n": "الشفا", "c": 17, "a": 9.1, "d": 1.9, "p": 35.3, "top": [["عنوان القهوة", 3], ["ستاربكس", 2]], "e": "Al Shifa"}, {"n": "الاندلس", "c": 17, "a": 4.34, "d": 3.9, "p": 35.3, "top": [["دانكن", 3], ["ستاربكس", 2]], "e": "Al Andalus"}, {"n": "عرقة", "c": 15, "a": 16.94, "d": 0.9, "p": 73.3, "top": [["ستاربكس", 4], ["عنوان القهوة", 2], ["دانكن", 2]], "e": "Irqah"}, {"n": "الملك عبدالعزيز", "c": 14, "a": 16.84, "d": 0.8, "p": 28.6, "top": [["ستاربكس", 2]], "e": "King Abdulaziz"}, {"n": "المنصورة", "c": 14, "a": 5.93, "d": 2.4, "p": 57.1, "top": [["دانكن", 3], ["عنوان القهوة", 2]], "e": "Al Mansurah"}, {"n": "العريجاء الغربي", "c": 14, "a": 16.24, "d": 0.9, "p": 57.1, "top": [["ستاربكس", 3], ["عنوان القهوة", 3]], "e": "West Oraija"}, {"n": "الواحة", "c": 13, "a": 3.33, "d": 3.9, "p": 23.1, "top": [["ستاربكس", 2]], "e": "Al Wahah"}, {"n": "السعادة", "c": 13, "a": 9.29, "d": 1.4, "p": 53.8, "top": [["ستاربكس", 2]], "e": "Al Saadah"}, {"n": "الفيحاء", "c": 12, "a": 5.43, "d": 2.2, "p": 50.0, "top": [["عنوان القهوة", 3], ["ارابيكا ستار", 2]], "e": "Al Fayha"}, {"n": "الملك عبدالله", "c": 12, "a": 8.58, "d": 1.4, "p": 75.0, "top": [["دانكن", 3], ["دكتور كيف", 3], ["ستاربكس", 2]], "e": "King Abdullah"}, {"n": "الوادي", "c": 12, "a": 4.01, "d": 3.0, "p": 75.0, "top": [["ستاربكس", 3]], "e": "Al Wadi"}, {"n": "النسيم الشرقي", "c": 11, "a": 13.76, "d": 0.8, "p": 72.7, "top": [["دكتور كيف", 3], ["تيم هورتنز", 2]], "e": "East Naseem"}, {"n": "ظهرة البديعة", "c": 11, "a": 7.5, "d": 1.5, "p": 36.4, "top": [["عنوان القهوة", 2]], "e": "Dhahrat Al Badeah"}, {"n": "العريجاء الوسطى", "c": 11, "a": 8.67, "d": 1.3, "p": 18.2, "top": [], "e": "Middle Oraija"}, {"n": "العوالي", "c": 11, "a": 16.16, "d": 0.7, "p": 36.4, "top": [["ستاربكس", 2]], "e": "Al Awaly"}, {"n": "الهدا", "c": 10, "a": 13.89, "d": 0.7, "p": 50.0, "top": [["دكتور كيف", 2]], "e": "Al Hada"}, {"n": "غرناطة", "c": 10, "a": 3.98, "d": 2.5, "p": 40.0, "top": [], "e": "Ghirnatah"}, {"n": "جامعة الامام محمد بن سعود الاسلامية", "c": 10, "a": 4.62, "d": 2.2, "p": 80.0, "top": [["دكتور كيف", 5], ["دانكن", 2]], "e": "Imam Muhammed Bin Saud Islamic University"}, {"n": "الوشام", "c": 10, "a": 1.17, "d": 8.5, "p": 30.0, "top": [["ستاربكس", 2]], "e": "Al Wisham"}, {"n": "نمار", "c": 10, "a": 7.77, "d": 1.3, "p": 50.0, "top": [["دكتور كيف", 2], ["ستاربكس", 2]], "e": "Namar"}, {"n": "الضباط", "c": 10, "a": 2.32, "d": 4.3, "p": 70.0, "top": [["java cafe", 2], ["دكتور كيف", 2], ["دانكن", 2]], "e": "Al Dhubbat"}, {"n": "الحزم", "c": 10, "a": 10.75, "d": 0.9, "p": 40.0, "top": [["عنوان القهوة", 2]], "e": "Al Hazm"}, {"n": "الوزارات", "c": 10, "a": 2.3, "d": 4.3, "p": 60.0, "top": [["دانكن", 3], ["ستاربكس", 3]], "e": "Al Wizarat"}, {"n": "الجزيرة", "c": 10, "a": 8.86, "d": 1.1, "p": 80.0, "top": [["دكتور كيف", 5]], "e": "Al Jazeerah"}, {"n": "عليشة", "c": 9, "a": 2.23, "d": 4.0, "p": 77.8, "top": [["دكتور كيف", 4], ["ستاربكس", 2]], "e": "Olaishah"}, {"n": "السلام", "c": 9, "a": 5.65, "d": 1.6, "p": 22.2, "top": [["دانكن", 2]], "e": "Al Salam"}, {"n": "الفيصلية", "c": 9, "a": 9.64, "d": 0.9, "p": 11.1, "top": [], "e": "Al Faisaliyah"}, {"n": "الرماية", "c": 8, "a": 21.65, "d": 0.4, "p": 50.0, "top": [["دانكن", 2]], "e": "Al Rimayah"}, {"n": "الزهرة", "c": 8, "a": 4.95, "d": 1.6, "p": 50.0, "top": [], "e": "Al Zahrah"}, {"n": "القادسية", "c": 8, "a": 11.83, "d": 0.7, "p": 75.0, "top": [["ستاربكس", 2], ["دانكن", 2], ["عنوان القهوة", 2]], "e": "Al Qadisiyah"}, {"n": "النموذجية", "c": 8, "a": 2.77, "d": 2.9, "p": 62.5, "top": [["ستاربكس", 2]], "e": "Al Namudhajiyah"}, {"n": "الزهراء", "c": 7, "a": 1.76, "d": 4.0, "p": 28.6, "top": [], "e": "Al Zahra"}, {"n": "المروة", "c": 7, "a": 6.18, "d": 1.1, "p": 71.4, "top": [["ستاربكس", 3]], "e": "Al Marwah"}, {"n": "الديرة", "c": 7, "a": 1.58, "d": 4.4, "p": 42.9, "top": [["ستاربكس", 2]], "e": "Al Dirah"}, {"n": "لبن", "c": 6, "a": 25.04, "d": 0.2, "p": 66.7, "top": [["دانكن", 2]], "e": "Laban"}, {"n": "السلي", "c": 6, "a": 34.76, "d": 0.2, "p": 33.3, "top": [["دانكن", 2]], "e": "Al Sulay"}, {"n": "الفوطة", "c": 6, "a": 1.12, "d": 5.4, "p": 33.3, "top": [], "e": "Al Futah"}, {"n": "الرائد", "c": 6, "a": 5.03, "d": 1.2, "p": 66.7, "top": [["دانكن", 2]], "e": "Al Raed"}, {"n": "النظيم", "c": 6, "a": 151.22, "d": 0.0, "p": 50.0, "top": [], "e": "Al Nadheem"}, {"n": "الندوة", "c": 6, "a": 4.05, "d": 1.5, "p": 66.7, "top": [["دانكن", 3]], "e": "Al Nadwah"}, {"n": "جرير", "c": 6, "a": 2.62, "d": 2.3, "p": 50.0, "top": [["دكتور كيف", 2]], "e": "Jareer"}, {"n": "المهدية", "c": 6, "a": 24.79, "d": 0.2, "p": 33.3, "top": [], "e": "Al Mahdiyah"}, {"n": "المؤتمرات", "c": 6, "a": 1.84, "d": 3.3, "p": 50.0, "top": [["دكتور كيف", 2]], "e": "Al Mutamarat"}, {"n": "المصفاة", "c": 5, "a": 98.3, "d": 0.1, "p": 80.0, "top": [["دانكن", 2]], "e": "Al Misfat"}, {"n": "المدينة الصناعية الثانية", "c": 5, "a": 33.86, "d": 0.1, "p": 80.0, "top": [["ستاربكس", 2], ["دانكن", 2]], "e": "2nd Industrial City"}, {"n": "ديراب", "c": 5, "a": 14.45, "d": 0.3, "p": 100.0, "top": [["دانكن", 2], ["ستاربكس", 2]], "e": "Dirab"}, {"n": "الصفا", "c": 5, "a": 5.38, "d": 0.9, "p": 80.0, "top": [["عنوان القهوة", 2]], "e": "Al Safa"}, {"n": "العمل", "c": 5, "a": 1.27, "d": 3.9, "p": 0.0, "top": [], "e": "Al Amal"}, {"n": "المصانع", "c": 4, "a": 19.17, "d": 0.2, "p": 25.0, "top": [], "e": "Al Masani"}, {"n": "الدار البيضاء", "c": 4, "a": 15.35, "d": 0.3, "p": 50.0, "top": [], "e": "Al Dar Al Baida"}, {"n": "الرفيعة", "c": 4, "a": 5.54, "d": 0.7, "p": 25.0, "top": [], "e": "Ar Rafiah"}, {"n": "بنبان", "c": 4, "a": 147.88, "d": 0.0, "p": 75.0, "top": [["دانكن", 2]], "e": "Banban"}, {"n": "الناصرية", "c": 3, "a": 2.3, "d": 1.3, "p": 66.7, "top": [], "e": "Al Nasiriyah"}, {"n": "الصناعية", "c": 3, "a": 5.53, "d": 0.5, "p": 100.0, "top": [], "e": "Al Sinaiyah"}, {"n": "ام الحمام الشرقي", "c": 3, "a": 3.14, "d": 1.0, "p": 0.0, "top": [], "e": "East Umm Al Hamam"}, {"n": "المعيزلة", "c": 3, "a": 14.17, "d": 0.2, "p": 66.7, "top": [], "e": "Al Maizalah"}, {"n": "البيان", "c": 3, "a": 16.21, "d": 0.2, "p": 66.7, "top": [], "e": "Al Bayan"}, {"n": "عتيقة", "c": 3, "a": 1.9, "d": 1.6, "p": 100.0, "top": [["ستاربكس", 2]], "e": "Utayqah"}, {"n": "الفاروق", "c": 3, "a": 5.68, "d": 0.5, "p": 100.0, "top": [], "e": "Al Farooq"}, {"n": "منفوحة", "c": 3, "a": 2.47, "d": 1.2, "p": 66.7, "top": [["دكتور كيف", 2]], "e": "Manfuhah"}, {"n": "الشرفية", "c": 2, "a": 1.58, "d": 1.3, "p": 100.0, "top": [], "e": "Al Sharafiyah"}, {"n": "الحائر", "c": 2, "a": 152.78, "d": 0.0, "p": 50.0, "top": [], "e": "Al Haer"}, {"n": "الشميسي", "c": 2, "a": 1.48, "d": 1.4, "p": 0.0, "top": [], "e": "Al Shumaisi"}, {"n": "سلطانة", "c": 2, "a": 2.99, "d": 0.7, "p": 50.0, "top": [], "e": "Sultanah"}, {"n": "النور", "c": 2, "a": 8.72, "d": 0.2, "p": 50.0, "top": [], "e": "Al Noor"}, {"n": "عكاظ", "c": 2, "a": 16.22, "d": 0.1, "p": 100.0, "top": [], "e": "Okaz"}, {"n": "غبيرة", "c": 1, "a": 1.76, "d": 0.6, "p": 100.0, "top": [], "e": "Ghobairah"}, {"n": "الدريهمية", "c": 1, "a": 1.69, "d": 0.6, "p": 0.0, "top": [], "e": "Al Duraihemiyah"}, {"n": "البديعة", "c": 1, "a": 3.71, "d": 0.3, "p": 100.0, "top": [], "e": "Al Badiah"}, {"n": "احد", "c": 1, "a": 6.96, "d": 0.1, "p": 0.0, "top": [], "e": "Ohod"}, {"n": "الصالحية", "c": 1, "a": 0.67, "d": 1.5, "p": 0.0, "top": [], "e": "As Salhiyah"}, {"n": "ثليم", "c": 1, "a": 0.83, "d": 1.2, "p": 100.0, "top": [], "e": "Thulaim"}, {"n": "ضاحية نمار", "c": 1, "a": 134.55, "d": 0.0, "p": 0.0, "top": [], "e": "Dahiyat Namar"}, {"n": "البرية", "c": 1, "a": 78.4, "d": 0.0, "p": 100.0, "top": [], "e": "Al Bariyah"}, {"n": "المرقب", "c": 1, "a": 0.9, "d": 1.1, "p": 0.0, "top": [], "e": "Al Marqab"}, {"n": "العريجاء", "c": 1, "a": 4.41, "d": 0.2, "p": 0.0, "top": [], "e": "Al Uraija"}, {"n": "العود", "c": 1, "a": 2.13, "d": 0.5, "p": 100.0, "top": [], "e": "Al Oud"}, {"n": "جبرة", "c": 1, "a": 0.35, "d": 2.9, "p": 0.0, "top": [], "e": "Jabrah"}, {"n": "الدحو", "c": 1, "a": 0.08, "d": 12.5, "p": 0.0, "top": [], "e": "Al Dahou"}, {"n": "عريض", "c": 1, "a": 177.02, "d": 0.0, "p": 100.0, "top": [], "e": "Oraid"}, {"n": "الغنامية", "c": 1, "a": 12.8, "d": 0.1, "p": 100.0, "top": [], "e": "Al Ghannamiyah"}, {"n": "وادي لبن", "c": 1, "a": 43.24, "d": 0.0, "p": 100.0, "top": [], "e": "Wady Laban"}, {"n": "المرجان", "c": 1, "a": 22.7, "d": 0.0, "p": 100.0, "top": [], "e": "Al Marjan"}], "overall": 44.5},R=D.rows,AVG=D.overall;
+const BR={'ستاربكس':'Starbucks','دانكن':"Dunkin'",'عنوان القهوة':'Coffee Address','دكتور كيف':'Dr.CAFE','تيم هورتنز':'Tim Hortons','جافا تايم':'Java Time','كاريبو':'Caribou','نص مليون':'Half Million','كوستا':'Costa','بارنز':"Barn's"};
+const L={
+en:{title:'Riyadh Cafe Competition Explorer',h1:'Where is the cafe competition in Riyadh?',sub:'Click any district to see its competition level and chain share',map:'Open the map',
+ size:'District size',all:'All',small:'Small',medium:'Medium',large:'Large',minc:'Min. cafes',search:'Search district…',
+ scT:'Districts by competition and chain share',scS:'Right = more competition · Up = more chains · Dot size = number of cafes',xl:'cafes per km²',
+ hi:'High competition',mid:'Medium',lo:'Low',avg:'Avg. chain share ',
+ plT:'Most and least competitive',plS:'cafes per km² · follows the filters above',top:'Most competitive',low:'Least competitive',ch:'chains',
+ rkT:'District ranking',mD:'Density',mC:'Count',mP:'Chain share',ordD:'Highest first',ordA:'Lowest first',
+ none:'No districts match these filters',cafes:'cafes',perkm:'cafes/km²',chainsW:'chains',lvl:{hi:'High competition',mid:'Medium competition',lo:'Low competition'},
+ v:{few:'Few cafes here, so the numbers are unstable.',hiC:'High competition, and chains are strong.',hiI:'High competition, mostly independent cafes.',hiB:'High competition, balanced between chains and independents.',midC:'Medium competition, with more chains than usual.',mid:'Medium competition.',lo:'Low competition. It may mean empty land or lower demand, so check on the ground.'},
+ noteH:'Competition level = cafes per km² (high ≥ 6, medium 2.5–6, low < 2.5). This describes what is <b>listed in OpenStreetMap and Overture</b>. It is not investment advice: it does not include sales, population or rent data, and some cafes are unlisted or closed.',
+ how:'How it is calculated and data limits',
+ howl:['3,270 cafes in 143 districts (King Khalid Airport is excluded from the ranking because its polygon covers 251 km²).','District size: small < 5 km², medium 5–20, large > 20.','Chains: a known brand, or a name that appears 5 times or more. The classification is approximate.','91% of records come from Overture only, and district borders come from a community dataset that can be off near the edges.','Districts with fewer than 10 cafes have unstable numbers.']},
+ar:{title:'مستكشف منافسة المقاهي في الرياض',h1:'أين المنافسة بين مقاهي الرياض؟',sub:'اضغط على أي حي ليظهر مستوى المنافسة والسلاسل فيه',map:'افتح الخريطة',
+ size:'حجم الحي',all:'الكل',small:'صغير',medium:'متوسط',large:'واسع',minc:'أقل عدد مقاهٍ',search:'ابحث عن حي…',
+ scT:'الأحياء حسب المنافسة والسلاسل',scS:'يمين = منافسة أعلى · فوق = سلاسل أكثر · حجم النقطة = عدد المقاهي',xl:'مقهى لكل كم²',
+ hi:'منافسة عالية',mid:'متوسطة',lo:'منخفضة',avg:'متوسط السلاسل ',
+ plT:'الأعلى والأقل منافسة',plS:'مقهى لكل كم² · حسب الفلاتر أعلاه',top:'أعلى منافسة',low:'أقل منافسة',ch:'سلاسل',
+ rkT:'ترتيب الأحياء',mD:'الكثافة',mC:'العدد',mP:'نسبة السلاسل',ordD:'الأعلى أولاً',ordA:'الأقل أولاً',
+ none:'لا توجد أحياء بهذه الفلاتر',cafes:'مقهى',perkm:'مقهى/كم²',chainsW:'سلاسل',lvl:{hi:'منافسة عالية',mid:'منافسة متوسطة',lo:'منافسة منخفضة'},
+ v:{few:'عدد المقاهي قليل، فالأرقام غير مستقرة.',hiC:'منافسة عالية والسلاسل حاضرة بقوة.',hiI:'منافسة عالية ومعظمها مقاهٍ مستقلة.',hiB:'منافسة عالية بتوازن بين السلاسل والمستقلة.',midC:'منافسة متوسطة والسلاسل أعلى من المعتاد.',mid:'منافسة متوسطة.',lo:'منافسة منخفضة. قد تعني مساحة فارغة أو طلباً أقل، ويُستحسن التحقق ميدانياً.'},
+ noteH:'مستوى المنافسة = عدد المقاهي لكل كم² (عالية ≥ 6، متوسطة 2.5–6، منخفضة أقل من 2.5). هذا وصف لما هو <b>مسجّل في OpenStreetMap وOverture</b> وليس قراراً استثمارياً: لا يشمل المبيعات أو السكان أو الإيجارات، وبعض المقاهي غير مسجّلة أو مغلقة.',
+ how:'طريقة الحساب وحدود البيانات',
+ howl:['3,270 مقهى في 143 حياً (استُبعد مطار الملك خالد من الترتيب لأن مضلّعه 251 كم²).','حجم الحي: صغير أقل من 5 كم²، متوسط 5–20، واسع أكثر من 20.','السلاسل: علامة معروفة أو اسم يتكرر 5 مرات فأكثر. التصنيف تقريبي.','91% من السجلات من Overture فقط، وحدود الأحياء من مجموعة مجتمعية قد تخطئ قرب الحدود.','الأحياء التي فيها أقل من 10 مقاهٍ أرقامها غير مستقرة.']}};
+let lang=(new URLSearchParams(location.search).get('lang')==='ar')?'ar':'en';
+const T=k=>L[lang][k];
+const NF=n=>Number(n).toLocaleString('en-US');
+const lvl=d=>d>=6?'hi':d>=2.5?'mid':'lo';
+const COL={hi:'#6F4E37',mid:'#C68B59',lo:'#D9C6AE'};
+const st={size:'all',min:10,q:'',m:'d',o:'desc',sel:'العليا',k:5};
+const nm=r=>lang==='en'?r.e:r.n;
+const bn=b=>lang==='en'?(BR[b]||b):b;
+const tip=document.getElementById('tip');
+function showTip(e,h){tip.innerHTML=h;tip.style.opacity=1;let x=e.clientX+14;if(x+tip.offsetWidth>innerWidth-8)x=e.clientX-tip.offsetWidth-14;tip.style.left=x+'px';tip.style.top=e.clientY+14+'px'}
+const hideTip=()=>tip.style.opacity=0;
+const sizeOf=a=>a<5?'s':a<=20?'m':'l';
+const q=()=>st.q.toLowerCase();
+function pass(r){return r.c>=st.min&&(st.size==='all'||sizeOf(r.a)===st.size)&&(!st.q||r.n.includes(st.q)||r.e.toLowerCase().includes(q()))}
+function el(t,a,x){const n=document.createElementNS('http://www.w3.org/2000/svg',t);for(const k in a)n.setAttribute(k,a[k]);if(x!=null)n.textContent=x;return n}
+
+function applyLang(){
+ document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.title=T('title');
+ document.querySelectorAll('[data-i]').forEach(e=>e.textContent=T(e.dataset.i));
+ document.querySelector('[data-i="noteH"]').innerHTML=T('noteH');
+ document.getElementById('q').placeholder=T('search');
+ document.getElementById('lang').textContent=lang==='en'?'العربية':'English';
+ document.getElementById('howl').innerHTML=T('howl').map(x=>`<li>${x}</li>`).join('');
+ document.getElementById('ord').textContent=T(st.o==='desc'?'ordD':'ordA');
+}
+function drawScatter(){
+ const host=document.getElementById('sc');host.innerHTML='';
+ const W=640,H=380,m={l:44,r:14,t:12,b:42};const s=el('svg',{viewBox:`0 0 ${W} ${H}`});host.appendChild(s);
+ const mx=18,X=d=>m.l+Math.sqrt(d/mx)*(W-m.l-m.r),Y=p=>H-m.b-(p/100)*(H-m.t-m.b);
+ [0,25,50,75,100].forEach(v=>{s.appendChild(el('line',{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v),stroke:'#E6D8C6'}));s.appendChild(el('text',{x:m.l-8,y:Y(v)+4,'text-anchor':'end','font-size':11.5,fill:'#7A6657'},v+'%'))});
+ [0,1,2.5,6,12].forEach(v=>s.appendChild(el('text',{x:X(v),y:H-m.b+18,'text-anchor':'middle','font-size':11.5,fill:'#7A6657'},v)));
+ s.appendChild(el('text',{x:(W+m.l)/2,y:H-4,'text-anchor':'middle','font-size':12,fill:'#7A6657'},T('xl')));
+ [2.5,6].forEach(v=>s.appendChild(el('line',{x1:X(v),x2:X(v),y1:m.t,y2:H-m.b,stroke:'#D3BFA6','stroke-dasharray':'3 4'})));
+ const ay=Y(AVG);s.appendChild(el('line',{x1:m.l,x2:W-m.r,y1:ay,y2:ay,stroke:'#C68B59','stroke-dasharray':'5 4'}));
+ s.appendChild(el('text',{x:m.l+4,y:ay-5,'text-anchor':'start','font-size':11,fill:'#7A6657'},T('avg')+AVG+'%'));
+ const vis=R.filter(pass).sort((a,b)=>b.c-a.c);
+ R.filter(r=>!pass(r)).forEach(r=>s.appendChild(el('circle',{cx:X(r.d),cy:Y(r.p),r:3,fill:'#E3D6C3',opacity:.7})));
+ vis.forEach(r=>{const l=lvl(r.d),sel=r.n===st.sel,rad=Math.max(4,Math.sqrt(r.c)*1.15);
+  const c=el('circle',{cx:X(r.d),cy:Y(r.p),r:rad,fill:COL[l],stroke:sel?'#2B1B14':'#FFFDF9','stroke-width':sel?3:2,'fill-opacity':.92,style:'cursor:pointer'});
+  c.addEventListener('mousemove',e=>showTip(e,`<b>${nm(r)}</b><br>${r.c} ${T('cafes')} · ${r.d} ${T('perkm')}<br>${r.p}% ${T('chainsW')}`));c.addEventListener('mouseleave',hideTip);
+  c.addEventListener('click',()=>{st.sel=r.n;render()});s.appendChild(c)});
+ vis.filter(r=>r.n===st.sel||r.c>=100).forEach(r=>s.appendChild(el('text',{x:X(r.d),y:Y(r.p)-Math.max(4,Math.sqrt(r.c)*1.15)-5,'text-anchor':'middle','font-size':12.5,'font-weight':700,fill:'#2B1B14',style:'paint-order:stroke;stroke:#FFFDF9;stroke-width:3px'},nm(r))));
+ if(!vis.length)s.appendChild(el('text',{x:W/2,y:H/2,'text-anchor':'middle','font-size':14,fill:'#7A6657'},T('none')));
+}
+function verdict(r){const l=lvl(r.d),hiC=r.p>=AVG+8,loC=r.p<=AVG-8,v=L[lang].v;
+ if(r.c<10)return v.few;
+ if(l==='hi')return hiC?v.hiC:loC?v.hiI:v.hiB;
+ if(l==='mid')return hiC?v.midC:v.mid;
+ return v.lo}
+function drawDetail(){
+ const h=document.getElementById('detail'),k=st.k,pool=R.filter(pass);
+ if(!pool.length){h.innerHTML=`<div class="empty">${T('none')}</div>`;return}
+ const by=pool.slice().sort((a,b)=>b.d-a.d),top=by.slice(0,k),low=by.slice(-k).reverse();
+ const row=(r,i)=>`<div class="row ${r.n===st.sel?'sel':''}" data-n="${r.n}"><span class="num">${i+1}</span><span>${nm(r)}</span><span class="v">${r.d}<small>${r.p}% ${T('ch')}</small></span></div>`;
+ const sel=R.find(x=>x.n===st.sel);
+ h.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>${T('plT')}</h2>
+  <div class="grp"><button class="chip" data-k="5" aria-pressed="${k===5}">5</button><button class="chip" data-k="10" aria-pressed="${k===10}">10</button></div></div>
+  <p class="sub">${T('plS')}</p>
+  <h3><i style="background:${COL.hi}"></i>${T('top')}</h3>${top.map(row).join('')}
+  <h3><i style="background:${COL.lo};border:1px solid #C9B39A"></i>${T('low')}</h3>${low.map(row).join('')}
+  ${sel?`<div class="sel-box"><b>${nm(sel)}</b> · ${T('lvl')[lvl(sel.d)]}<br>${sel.c} ${T('cafes')} · ${sel.d} ${T('perkm')} · ${sel.p}% ${T('chainsW')}<br>${verdict(sel)}</div>`:''}`;
+ h.querySelectorAll('.row').forEach(e=>e.addEventListener('click',()=>{st.sel=e.dataset.n;render()}));
+ h.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{st.k=Number(b.dataset.k);render()}));
+}
+function drawList(){
+ const key=st.m,all=R.filter(pass),vis=all.slice().sort((a,b)=>st.o==='desc'?b[key]-a[key]:a[key]-b[key]).slice(0,12);
+ const max=Math.max(1,...all.map(r=>r[key])),f=v=>key==='p'?v+'%':key==='c'?NF(v):v;
+ document.getElementById('list').innerHTML=vis.length?vis.map(r=>`<div class="row ${r.n===st.sel?'sel':''}" data-n="${r.n}"><span>${nm(r)}</span><div class="track"><div class="fill" style="width:${r[key]/max*100}%;background:${COL[lvl(r.d)]}"></div></div><span class="val">${f(r[key])}</span></div>`).join(''):`<div class="empty">${T('none')}</div>`;
+ document.querySelectorAll('#list .row').forEach(e=>e.addEventListener('click',()=>{st.sel=e.dataset.n;render();scrollTo({top:0,behavior:'smooth'})}));
+}
+function render(){drawScatter();drawDetail();drawList()}
+function bind(sel,attr,key,conv){document.querySelectorAll(sel).forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll(sel).forEach(x=>x.setAttribute('aria-pressed',x===b));st[key]=conv?conv(b.dataset[attr]):b.dataset[attr];render()}))}
+bind('[data-size]','size','size');bind('[data-min]','min','min',Number);bind('[data-m]','m','m');
+document.getElementById('ord').addEventListener('click',()=>{st.o=st.o==='desc'?'asc':'desc';applyLang();render()});
+document.getElementById('q').addEventListener('input',e=>{st.q=e.target.value.trim();render()});
+document.getElementById('lang').addEventListener('click',()=>{lang=lang==='en'?'ar':'en';applyLang();render()});
+applyLang();render();
+</script>
+</body>
+</html>

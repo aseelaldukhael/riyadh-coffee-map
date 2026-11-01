@@ -43,7 +43,7 @@ canvas:active{cursor:grabbing}
 .scale .bar{height:8px;border-radius:4px;background:linear-gradient(90deg,#F5E6D3,#E2AA6E,#96502D);margin:5px 0 3px}
 .scale .ends{display:flex;justify-content:space-between;color:var(--muted)}
 .attr{position:absolute;bottom:3px;right:6px;font-size:10.5px;color:#5b4a3d;background:rgba(255,253,249,.85);padding:1px 6px;border-radius:6px}
-.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-left:5px;vertical-align:-1px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-inline-end:5px;vertical-align:-1px}
 #tip{position:fixed;pointer-events:none;background:var(--espresso);color:#fff;padding:7px 11px;border-radius:8px;font-size:13px;display:none;z-index:9;max-width:260px}
 label.f{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
@@ -58,16 +58,19 @@ input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-rad
 .bars .row{display:grid;grid-template-columns:110px 1fr 54px;align-items:center;gap:10px;margin:7px 0;font-size:14px}
 .bars .track{background:var(--cream);border-radius:8px;height:20px;overflow:hidden}
 .bars .fill{height:100%;border-radius:8px;background:var(--caramel)}
-.bars .val{text-align:left;font-weight:700;color:var(--brown)}
+.bars .val{text-align:end;font-weight:700;color:var(--brown)}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:start}
 th{color:var(--muted);font-weight:600;cursor:pointer;position:sticky;top:0;background:var(--card)}
 td.n{font-variant-numeric:tabular-nums}
 .tw{max-height:360px;overflow:auto}
-.mini{display:inline-block;height:8px;border-radius:4px;background:var(--caramel);vertical-align:middle;margin-right:6px}
+.mini{display:inline-block;height:8px;border-radius:4px;background:var(--caramel);vertical-align:middle;margin-inline-start:6px}
 .note li{margin:6px 0}
 footer{color:var(--muted);font-size:12.5px;padding:24px 0 40px}
-svg text{font-family:inherit}
+svg{direction:ltr}svg text{font-family:inherit}
+header .top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+#lang{font:inherit;font-weight:700;font-size:14px;color:var(--espresso);background:#E8C9A0;border:0;border-radius:999px;padding:7px 18px;cursor:pointer;white-space:nowrap}
+#lang:hover{background:#F0D5B0}
 @media(max-width:900px){
   .kpis{grid-template-columns:repeat(2,1fr)}.g2,.g2b{grid-template-columns:1fr}.insights{grid-template-columns:1fr}
   #mapwrap{height:420px}header h1{font-size:24px}.bars .row{grid-template-columns:90px 1fr 48px}
@@ -75,10 +78,10 @@ svg text{font-family:inherit}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <h1>خريطة المقاهي في الرياض</h1>
-  <p>توزيع المقاهي وكثافتها على مستوى الأحياء — مبني على Pipeline بيانات مفتوحة المصدر</p>
-</div></header>
+<header><div class="wrap"><div class="top"><div>
+  <h1 data-tx="h1"></h1>
+  <p data-tx="hp"></p>
+</div><button id="lang" type="button"></button></div></div></header>
 
 <main class="wrap">
   <section class="kpis" id="kpis"></section>
@@ -86,27 +89,27 @@ svg text{font-family:inherit}
 
   <section class="grid g2">
     <div class="card">
-      <h2>خريطة المقاهي</h2>
-      <p class="sub">كل نقطة مقهى، وألوان الأحياء تبيّن الكثافة. اضغطي على حي لتصفية مقاهيه. حرّكي بالسحب وكبّري بعجلة الفأرة.</p>
+      <h2 data-tx="mapT"></h2>
+      <p class="sub" data-tx="mapS"></p>
       <div id="mapwrap">
         <canvas id="map"></canvas>
-        <div class="mapbtns"><button id="zin">+</button><button id="zout">−</button><button id="zreset" title="إعادة">⟲</button></div>
-        <div class="tr" id="layerseg"><button data-l="density" class="on">كثافة</button><button data-l="count">عدد</button><button data-l="none">بدون تلوين</button></div>
-        <div class="scale" id="scalebox"><div id="scalelbl"></div><div class="bar"></div><div class="ends"><span>أقل</span><span>أعلى</span></div></div>
-        <div class="legend"><span><i class="dot" style="background:var(--chain)"></i>سلسلة</span><span><i class="dot" style="background:var(--indie)"></i>مستقل</span></div>
-        <div class="attr">© مساهمو OpenStreetMap</div>
+        <div class="mapbtns"><button id="zin">+</button><button id="zout">−</button><button id="zreset" data-tt="reset">⟲</button></div>
+        <div class="tr" id="layerseg"><button data-l="density" class="on" data-tx="lD"></button><button data-l="count" data-tx="lC"></button><button data-l="none" data-tx="lN"></button></div>
+        <div class="scale" id="scalebox"><div id="scalelbl"></div><div class="bar"></div><div class="ends"><span data-tx="lo"></span><span data-tx="hi"></span></div></div>
+        <div class="legend"><span><i class="dot" style="background:var(--chain)"></i><span data-tx="chain"></span></span><span><i class="dot" style="background:var(--indie)"></i><span data-tx="indie"></span></span></div>
+        <div class="attr" data-tx="attr"></div>
       </div>
     </div>
     <div class="card">
-      <h2>البحث والتصفية</h2>
-      <p class="sub">ابحثي باسم المقهى أو اختاري حيّاً.</p>
-      <label class="f" for="q">اسم المقهى</label>
-      <input id="q" placeholder="مثال: ستاربكس، دانكن، قهوة…">
-      <label class="f" for="dsel">الحي</label>
+      <h2 data-tx="srT"></h2>
+      <p class="sub" data-tx="srS"></p>
+      <label class="f" for="q" data-tx="qL"></label>
+      <input id="q" data-ph="qPh">
+      <label class="f" for="dsel" data-tx="dL"></label>
       <select id="dsel"></select>
-      <label class="f">النوع</label>
+      <label class="f" data-tx="tL"></label>
       <div class="seg" id="typeseg">
-        <button data-t="all" class="on">الكل</button><button data-t="chain">سلاسل</button><button data-t="indie">مستقلة</button>
+        <button data-t="all" class="on" data-tx="tAll"></button><button data-t="chain" data-tx="tCh"></button><button data-t="indie" data-tx="tIn"></button>
       </div>
       <div class="cnt" id="cnt"></div>
       <div id="results"></div>
@@ -115,43 +118,40 @@ svg text{font-family:inherit}
 
   <section class="grid g2b">
     <div class="card">
-      <h2>أعلى 10 أحياء</h2>
+      <h2 data-tx="topT"></h2>
       <p class="sub" id="barsub"></p>
       <div class="seg" id="metricseg" style="margin-bottom:8px">
-        <button data-m="cafes" class="on">حسب العدد</button><button data-m="density">حسب الكثافة</button>
+        <button data-m="cafes" class="on" data-tx="byC"></button><button data-m="density" data-tx="byD"></button>
       </div>
       <div class="bars" id="bars"></div>
     </div>
     <div class="card">
-      <h2>أكثر السلاسل انتشاراً</h2>
-      <p class="sub">عدد الفروع لكل اسم يتكرر <span id="chainmin"></span> مرات أو أكثر.</p>
+      <h2 data-tx="chT"></h2>
+      <p class="sub" id="chsub"></p>
       <div class="bars" id="chains"></div>
     </div>
   </section>
 
   <section class="grid g2b">
     <div class="card">
-      <h2>العدد مقابل المساحة</h2>
-      <p class="sub">كل نقطة حي. الحجم = الكثافة. أحياء كبيرة فيها مقاهٍ كثيرة لكن كثافتها منخفضة.</p>
+      <h2 data-tx="scT"></h2>
+      <p class="sub" data-tx="scS"></p>
       <svg id="scatter" viewBox="0 0 560 340" width="100%"></svg>
     </div>
     <div class="card">
-      <h2>جدول الأحياء</h2>
-      <p class="sub">اضغطي على عنوان العمود للترتيب.</p>
-      <input id="dq" placeholder="ابحثي عن حي…" style="margin-bottom:8px">
+      <h2 data-tx="tbT"></h2>
+      <p class="sub" data-tx="tbS"></p>
+      <input id="dq" data-ph="dqPh" style="margin-bottom:8px">
       <div class="tw"><table id="dtable"></table></div>
     </div>
   </section>
 
   <section class="card" style="margin-top:18px">
-    <h2>عن البيانات وحدودها</h2>
+    <h2 data-tx="ntT"></h2>
     <ul class="note" id="notes"></ul>
   </section>
 
-  <footer>
-    © مساهمو OpenStreetMap (ODbL) · Overture Maps — Places (CDLA Permissive 2.0) · حدود الأحياء: مجموعة مجتمعية (CC0 حسب المصدر).<br>
-    آخر تحديث: <span id="gen"></span>
-  </footer>
+  <footer id="foot"></footer>
 </main>
 <div id="tip"></div>
 
@@ -162,51 +162,111 @@ const NF = n => Number(n).toLocaleString('en-US');
 const fix1 = n => (Math.round(n*10)/10).toFixed(1);
 const norm = s => String(s).toLowerCase().replace(/[\u064B-\u0652\u0640]/g,'').replace(/[\u0622\u0623\u0625]/g,'\u0627').replace(/\u0649/g,'\u064a').replace(/\u0629/g,'\u0647').replace(/[^\w\s\u0600-\u06FF]/g,' ').replace(/\s+/g,' ').trim();
 const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const L={
+en:{h1:'Riyadh Coffee Map',hp:'Where the cafes are and how dense they are, district by district. Built on an open-data pipeline.',
+mapT:'Cafe map',mapS:'Each dot is a cafe; district colours show density. Click a district to filter its cafes. Drag to pan, scroll to zoom.',
+lD:'Density',lC:'Count',lN:'No fill',lo:'Lower',hi:'Higher',chain:'Chain',indie:'Independent',attr:'© OpenStreetMap contributors',
+srT:'Search and filter',srS:'Search by cafe name or pick a district.',qL:'Cafe name',qPh:'e.g. Starbucks, Dunkin, Qahwa…',dL:'District',tL:'Type',
+tAll:'All',tCh:'Chains',tIn:'Independent',topT:'Top 10 districts',byC:'By count',byD:'By density',
+chT:'Most widespread chains',chS:'Branches per name that appears %m or more times.',
+scT:'Count vs. area',scS:'Each dot is a district; size = density. Large districts can hold many cafes yet have low density.',
+tbT:'District table',tbS:'Click a column header to sort.',dqPh:'Search a district…',ntT:'About the data and its limits',
+reset:'Reset',
+k1:'Cafes mapped',k2:'Districts with cafes',k3:'Most cafes',k4:'Highest density',kc:n=>n+' cafes',kd:n=>n+' cafes/km²',
+i1:(a,n,d)=>`<b>${a}</b> has the most cafes (${n}), at ${d} cafes per km².`,
+i2:(a,n,d,ar)=>`Most cafes does not mean most dense: <b>${a}</b> has ${n} cafes but only ${d} per km², because it is large (${ar} km²).`,
+i3:(sh,m)=>`<b>${sh}%</b> of cafes carry a name that appears ${m} or more times; the rest are independent.`,
+bC:'Number of cafes in each district.',bD:m=>`Cafes per km². Only districts with ${m} or more cafes, to avoid misleading figures from tiny districts.`,
+xA:'District area (km²)',yA:'Cafes',tipS:(n,a)=>`${n} cafes · ${a} km²`,tipD:d=>`density ${d}`,tipClick:'click to filter',
+thD:'District',thC:'Cafes',thA:'Area (km²)',thDn:'Density',
+sc1:'Density (small districts in grey)',sc2:'Count',scl1:'District colour = density (small districts in grey)',scl2:'District colour = number of cafes',
+all:'All districts',cnt:n=>n+' matching cafes',
+nt:[m=>`Sources: OpenStreetMap and Overture Maps. ${m.b} cafes appear in both, ${m.o} in Overture only, ${m.s} in OpenStreetMap only.`,
+()=>'Figures reflect places listed in the two sources. Some cafes may be closed, and some real cafes may be missing.',
+()=>'Cleaning: places with low confidence (below 0.5 in Overture) and places without a name are removed; duplicates are merged (same place within 75 m with a similar name).',
+m=>`Chain = a name that appears ${m.c} or more times. This is a rough rule and can be wrong for similar names.`,
+()=>'Density = cafes ÷ the full district area (including empty land).',
+m=>`Different spellings of the same brand (e.g. Starbucks, ستاربكس, ستاربوكس) are merged into one brand for known brands (${m.k} cafes).`,
+()=>'The base map needs an internet connection; without it only districts and cafes are shown.',
+()=>'Airport-area cafes appear on the map but are left out of the district ranking, because the polygon covers a very large area and is not a residential district.',
+()=>'This dashboard has no population, income or foot-traffic data, so low density alone does not mean an opportunity.'],
+foot:g=>`© OpenStreetMap contributors (ODbL) · Overture Maps — Places (CDLA Permissive 2.0) · district boundaries: community dataset (CC0 per source).<br>Last updated: ${g}`,
+btn:'العربية'},
+ar:{h1:'خريطة المقاهي في الرياض',hp:'توزيع المقاهي وكثافتها على مستوى الأحياء — مبني على Pipeline بيانات مفتوحة المصدر',
+mapT:'خريطة المقاهي',mapS:'كل نقطة مقهى، وألوان الأحياء تبيّن الكثافة. يمكن الضغط على حي لتصفية مقاهيه. السحب للتحريك وعجلة الفأرة للتكبير.',
+lD:'كثافة',lC:'عدد',lN:'بدون تلوين',lo:'أقل',hi:'أعلى',chain:'سلسلة',indie:'مستقل',attr:'© مساهمو OpenStreetMap',
+srT:'البحث والتصفية',srS:'البحث باسم المقهى أو اختيار حي.',qL:'اسم المقهى',qPh:'مثال: ستاربكس، دانكن، قهوة…',dL:'الحي',tL:'النوع',
+tAll:'الكل',tCh:'سلاسل',tIn:'مستقلة',topT:'أعلى 10 أحياء',byC:'حسب العدد',byD:'حسب الكثافة',
+chT:'أكثر السلاسل انتشاراً',chS:'عدد الفروع لكل اسم يتكرر %m مرات أو أكثر.',
+scT:'العدد مقابل المساحة',scS:'كل نقطة حي. الحجم = الكثافة. أحياء كبيرة فيها مقاهٍ كثيرة لكن كثافتها منخفضة.',
+tbT:'جدول الأحياء',tbS:'الضغط على عنوان العمود يرتّب الجدول.',dqPh:'البحث عن حي…',ntT:'عن البيانات وحدودها',
+reset:'إعادة',
+k1:'إجمالي المقاهي المرصودة',k2:'حيّاً فيه مقاهٍ',k3:'الأعلى عدداً',k4:'الأعلى كثافة',kc:n=>n+' مقهى',kd:n=>n+' مقهى/كم²',
+i1:(a,n,d)=>`<b>${a}</b> الأول في العدد (${n}) وكثافته ${d} مقهى لكل كم².`,
+i2:(a,n,d,ar)=>`الأعلى عدداً ليس بالضرورة الأعلى كثافة: <b>${a}</b> فيه ${n} مقهى لكن كثافته ${d} فقط، لأن مساحته كبيرة (${ar} كم²).`,
+i3:(sh,m)=>`<b>${sh}%</b> من المقاهي تتبع أسماءً تتكرر ${m} مرات أو أكثر، والباقي مقاهٍ مستقلة.`,
+bC:'عدد المقاهي في كل حي.',bD:m=>`مقهى لكل كم². الأحياء التي فيها ${m} مقاهٍ أو أكثر فقط، لتجنب أرقام مضللة من أحياء صغيرة.`,
+xA:'مساحة الحي (كم²)',yA:'عدد المقاهي',tipS:(n,a)=>`${n} مقهى · ${a} كم²`,tipD:d=>`كثافة ${d}`,tipClick:'اضغط للتصفية',
+thD:'الحي',thC:'المقاهي',thA:'المساحة (كم²)',thDn:'الكثافة',
+sc1:'لون الحي = الكثافة (الأحياء الصغيرة بالرمادي)',sc2:'لون الحي = عدد المقاهي',scl1:'لون الحي = الكثافة (الأحياء الصغيرة بالرمادي)',scl2:'لون الحي = عدد المقاهي',
+all:'كل الأحياء',cnt:n=>n+' مقهى مطابق',
+nt:[m=>`المصادر: OpenStreetMap وOverture Maps. ${m.b} مقهى وُجد في المصدرين، و${m.o} من Overture فقط، و${m.s} من OpenStreetMap فقط.`,
+()=>'الأرقام تمثّل الأماكن المسجلة في المصدرين. قد يوجد مقاهٍ مغلقة، وقد تنقص مقاهٍ حقيقية.',
+()=>'التنظيف: حذف الأماكن ذات الثقة المنخفضة (أقل من 0.5 في Overture) والأماكن بلا اسم، ودمج المكرر (مكان واحد خلال 75 م مع تشابه الاسم).',
+m=>`السلسلة = اسم يتكرر ${m.c} مرات أو أكثر. هذه قاعدة تقريبية، وقد تخطئ مع أسماء متشابهة.`,
+()=>'الكثافة = عدد المقاهي ÷ مساحة الحي الكاملة (تشمل الأراضي الفضاء).',
+m=>`الأسماء المختلفة للعلامة نفسها (مثل Starbucks وستاربكس وستاربوكس) تُدمج في علامة واحدة للعلامات المعروفة (${m.k} مقهى).`,
+()=>'الخريطة الخلفية تحتاج إنترنت؛ بدونه تظهر الأحياء والمقاهي فقط.',
+()=>'مقاهي منطقة المطار تظهر على الخريطة لكنها خارج ترتيب الأحياء، لأن حدودها في ملف الأحياء تغطي مساحة كبيرة ولا تمثل حيّاً سكنياً.',
+()=>'هذه اللوحة لا تتضمن بيانات سكان أو دخل أو حركة زوار، لذلك الكثافة المنخفضة وحدها لا تعني فرصة استثمارية.'],
+foot:g=>`© مساهمو OpenStreetMap (ODbL) · Overture Maps — Places (CDLA Permissive 2.0) · حدود الأحياء: مجموعة مجتمعية (CC0 حسب المصدر).<br>آخر تحديث: ${g}`,
+btn:'English'}};
+let lang=(()=>{try{const q=new URLSearchParams(location.search).get('lang');if(q==='ar'||q==='en')return q;const s=localStorage.getItem('cmlang');if(s==='ar'||s==='en')return s;}catch(e){}return 'en';})();
+const T=(k,...a)=>{const v=L[lang][k];return typeof v==='function'?v(...a):v;};
+const dn=d=>lang==='ar'?d.ar:(d.en||d.ar);
 const ranked = D.map((d,i)=>({...d,i})).filter(d=>d.ranked);
 const forDensity = ranked.filter(d=>d.cafes>=M.min_for_density);
 const byCount = [...ranked].sort((a,b)=>b.cafes-a.cafes);
 const byDens = [...forDensity].sort((a,b)=>b.density-a.density);
 
 // ---------- KPIs + insights ----------
-document.getElementById('kpis').innerHTML = [
-  [NF(M.total),'إجمالي المقاهي المرصودة',''],
-  [NF(ranked.length),'حيّاً فيه مقاهٍ',''],
-  [esc(byCount[0].ar),'الأعلى عدداً',NF(byCount[0].cafes)+' مقهى'],
-  [esc(byDens[0].ar),'الأعلى كثافة',fix1(byDens[0].density)+' مقهى/كم²']
-].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
-
 const top5 = byCount.slice(0,5);
 const lowest = [...top5].sort((a,b)=>a.density-b.density)[0];
-document.getElementById('insights').innerHTML = [
-  `<b>${esc(byCount[0].ar)}</b> الأول في العدد (${NF(byCount[0].cafes)}) وكثافته ${fix1(byCount[0].density)} مقهى لكل كم².`,
-  `الأعلى عدداً ليس بالضرورة الأعلى كثافة: <b>${esc(lowest.ar)}</b> فيه ${NF(lowest.cafes)} مقهى لكن كثافته ${fix1(lowest.density)} فقط، لأن مساحته كبيرة (${fix1(lowest.area)} كم²).`,
-  `<b>${M.chain_share}%</b> من المقاهي تتبع أسماءً تتكرر ${M.chain_min} مرات أو أكثر، والباقي مقاهٍ مستقلة.`
-].map(t=>`<div class="ins">${t}</div>`).join('');
-document.getElementById('chainmin').textContent = M.chain_min;
-document.getElementById('gen').textContent = M.generated;
+function renderTop(){
+  document.getElementById('kpis').innerHTML = [
+    [NF(M.total),T('k1'),''],
+    [NF(ranked.length),T('k2'),''],
+    [esc(dn(byCount[0])),T('k3'),T('kc',NF(byCount[0].cafes))],
+    [esc(dn(byDens[0])),T('k4'),T('kd',fix1(byDens[0].density))]
+  ].map(k=>`<div class="kpi"><div class="v">${k[0]}</div><div class="l">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+  document.getElementById('insights').innerHTML = [
+    T('i1',esc(dn(byCount[0])),NF(byCount[0].cafes),fix1(byCount[0].density)),
+    T('i2',esc(dn(lowest)),NF(lowest.cafes),fix1(lowest.density),fix1(lowest.area)),
+    T('i3',M.chain_share,M.chain_min)
+  ].map(t=>`<div class="ins">${t}</div>`).join('');
+  document.getElementById('foot').innerHTML = T('foot',M.generated);
+}
 
 // ---------- bars ----------
 let metric='cafes';
 function renderBars(){
   const list = (metric==='cafes'?byCount:byDens).slice(0,10);
   const max = Math.max(...list.map(d=>d[metric]));
-  document.getElementById('barsub').textContent = metric==='cafes'
-    ? 'عدد المقاهي في كل حي.'
-    : `مقهى لكل كم². الأحياء التي فيها ${M.min_for_density} مقاهٍ أو أكثر فقط، لتجنب أرقام مضللة من أحياء صغيرة.`;
+  document.getElementById('barsub').textContent = metric==='cafes' ? T('bC') : T('bD',M.min_for_density);
   document.getElementById('bars').innerHTML = list.map(d=>
-    `<div class="row" title="${esc(d.en)}"><span>${esc(d.ar)}</span><div class="track"><div class="fill" style="width:${d[metric]/max*100}%"></div></div><span class="val">${metric==='cafes'?NF(d.cafes):fix1(d.density)}</span></div>`).join('');
+    `<div class="row" title="${esc(lang==='ar'?d.en:d.ar)}"><span>${esc(dn(d))}</span><div class="track"><div class="fill" style="width:${d[metric]/max*100}%"></div></div><span class="val">${metric==='cafes'?NF(d.cafes):fix1(d.density)}</span></div>`).join('');
 }
 document.querySelectorAll('#metricseg button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#metricseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');metric=b.dataset.m;renderBars();});
-renderBars();
-(function(){
+function renderChains(){
+  document.getElementById('chsub').textContent=T('chS').replace('%m',M.chain_min);
   const max = Math.max(...DATA.chains.map(c=>c.branches));
   document.getElementById('chains').innerHTML = DATA.chains.slice(0,10).map(c=>
-    `<div class="row" title="${esc(c.en||'')}"><span>${esc(c.name)}</span><div class="track"><div class="fill" style="width:${c.branches/max*100}%;background:var(--chain)"></div></div><span class="val">${NF(c.branches)}</span></div>`).join('');
-})();
+    `<div class="row" title="${esc(lang==='ar'?(c.en||''):c.name)}"><span>${esc(lang==='ar'?c.name:(c.en||c.name))}</span><div class="track"><div class="fill" style="width:${c.branches/max*100}%;background:var(--chain)"></div></div><span class="val">${NF(c.branches)}</span></div>`).join('');
+}
 
 // ---------- scatter ----------
-(function(){
+function renderScatter(){
   const svg=document.getElementById('scatter'), W=560,H=340,p={l:46,r:14,t:18,b:38};
   const xs=forDensity.map(d=>d.area), ys=forDensity.map(d=>d.cafes);
   const xm=Math.max(...xs)*1.05, ym=Math.max(...ys)*1.12;
@@ -214,8 +274,8 @@ renderBars();
   let s='';
   for(let i=0;i<=4;i++){const yv=ym*i/4;s+=`<line x1="${p.l}" x2="${W-p.r}" y1="${Y(yv)}" y2="${Y(yv)}" stroke="#E6D8C6"/><text x="${p.l-6}" y="${Y(yv)+4}" font-size="11" fill="#7A6657" text-anchor="end">${Math.round(yv)}</text>`;}
   for(let i=0;i<=4;i++){const xv=xm*i/4;s+=`<text x="${X(xv)}" y="${H-p.b+16}" font-size="11" fill="#7A6657" text-anchor="middle">${Math.round(xv)}</text>`;}
-  s+=`<text x="${(W+p.l)/2}" y="${H-4}" font-size="12" fill="#7A6657" text-anchor="middle">مساحة الحي (كم²)</text>`;
-  s+=`<text transform="translate(12 ${H/2}) rotate(-90)" font-size="12" fill="#7A6657" text-anchor="middle">عدد المقاهي</text>`;
+  s+=`<text x="${(W+p.l)/2}" y="${H-4}" font-size="12" fill="#7A6657" text-anchor="middle"> ${T('xA')}</text>`;
+  s+=`<text transform="translate(12 ${H/2}) rotate(-90)" font-size="12" fill="#7A6657" text-anchor="middle">${T('yA')}</text>`;
   const dm=Math.max(...forDensity.map(d=>d.density));
   forDensity.forEach(d=>{const r=4+Math.sqrt(d.density/dm)*10;
     s+=`<circle cx="${X(d.area)}" cy="${Y(d.cafes)}" r="${r}" fill="#C68B59" fill-opacity=".6" stroke="#6F4E37" data-i="${d.i}"/>`;});
@@ -225,42 +285,34 @@ renderBars();
     while(placed.some(q=>Math.abs(q.x-x)<62&&Math.abs(q.y-y)<14)) y-=14;
     if(y<10) return;
     placed.push({x,y});
-    s+=`<text x="${x}" y="${y}" font-size="11.5" fill="#2B1B14" text-anchor="middle" font-weight="700">${esc(d.ar)}</text>`;});
+    s+=`<text x="${x}" y="${y}" font-size="11.5" fill="#2B1B14" text-anchor="middle" font-weight="700">${esc(dn(d))}</text>`;});
   svg.innerHTML=s;
   svg.querySelectorAll('circle').forEach(c=>{
     const d=D[c.dataset.i];
-    c.onmousemove=e=>showTip(e,`<b>${esc(d.ar)}</b><br>${NF(d.cafes)} مقهى · ${fix1(d.area)} كم²<br>كثافة ${fix1(d.density)}`);
+    c.onmousemove=e=>showTip(e,`<b>${esc(dn(d))}</b><br>${T('tipS',NF(d.cafes),fix1(d.area))}<br>${T('tipD',fix1(d.density))}`);
     c.onmouseleave=hideTip;});
-})();
+}
 
 // ---------- table ----------
 let sortKey='cafes', sortDir=-1, dfilter='';
 function renderTable(){
   const maxd=Math.max(...ranked.map(d=>d.density));
-  const rows=ranked.filter(d=>!dfilter||norm(d.ar+' '+d.en).includes(dfilter)).sort((a,b)=>{
-    const va=sortKey==='ar'?a.ar:a[sortKey], vb=sortKey==='ar'?b.ar:b[sortKey];
+  const rows=ranked.filter(d=>!dfilter||norm(d.ar+' '+(d.en||'')).includes(dfilter)).sort((a,b)=>{
+    const va=sortKey==='ar'?dn(a):a[sortKey], vb=sortKey==='ar'?dn(b):b[sortKey];
     return (va>vb?1:va<vb?-1:0)*sortDir;});
   document.getElementById('dtable').innerHTML =
-   `<thead><tr><th data-k="ar">الحي</th><th data-k="cafes">المقاهي</th><th data-k="area">المساحة (كم²)</th><th data-k="density">الكثافة</th></tr></thead><tbody>`+
-   rows.map(d=>`<tr><td>${esc(d.ar)}</td><td class="n">${NF(d.cafes)}</td><td class="n">${fix1(d.area)}</td><td class="n">${fix1(d.density)}<span class="mini" style="width:${d.density/maxd*50}px"></span></td></tr>`).join('')+'</tbody>';
+   `<thead><tr><th data-k="ar">${T('thD')}</th><th data-k="cafes">${T('thC')}</th><th data-k="area">${T('thA')}</th><th data-k="density">${T('thDn')}</th></tr></thead><tbody>`+
+   rows.map(d=>`<tr><td>${esc(dn(d))}</td><td class="n">${NF(d.cafes)}</td><td class="n">${fix1(d.area)}</td><td class="n">${fix1(d.density)}<span class="mini" style="width:${d.density/maxd*50}px"></span></td></tr>`).join('')+'</tbody>';
   document.querySelectorAll('#dtable th').forEach(th=>th.onclick=()=>{
     const k=th.dataset.k; if(sortKey===k)sortDir*=-1; else{sortKey=k;sortDir=k==='ar'?1:-1;} renderTable();});
 }
 document.getElementById('dq').oninput=e=>{dfilter=norm(e.target.value);renderTable();};
-renderTable();
 
 // ---------- notes ----------
-document.getElementById('notes').innerHTML = [
-  `المصادر: OpenStreetMap وOverture Maps. ${NF(M.src_both)} مقهى وُجد في المصدرين، و${NF(M.src_overture)} من Overture فقط، و${NF(M.src_osm)} من OpenStreetMap فقط.`,
-  'الأرقام تمثّل الأماكن المسجلة في المصدرين. قد يوجد مقاهٍ مغلقة، وقد تنقص مقاهٍ حقيقية.',
-  'التنظيف: حذف الأماكن ذات الثقة المنخفضة (أقل من 0.5 في Overture) والأماكن بلا اسم، ودمج المكرر (مكان واحد خلال 75 م مع تشابه الاسم).',
-  `السلسلة = اسم يتكرر ${M.chain_min} مرات أو أكثر. هذه قاعدة تقريبية، وقد تخطئ مع أسماء متشابهة.`,
-  'الكثافة = عدد المقاهي ÷ مساحة الحي الكاملة (تشمل الأراضي الفضاء).',
-  `الأسماء المختلفة للعلامة نفسها (مثل Starbucks وستاربكس وستاربوكس) تُدمج في علامة واحدة للعلامات المعروفة (${NF(M.known_brand_cafes)} مقهى).`,
-  'الخريطة الخلفية تحتاج إنترنت؛ بدونه تظهر الأحياء والمقاهي فقط.',
-  'مقاهي منطقة المطار تظهر على الخريطة لكنها خارج ترتيب الأحياء، لأن حدودها في ملف الأحياء تغطي مساحة كبيرة ولا تمثل حيّاً سكنياً.',
-  'هذه اللوحة لا تتضمن بيانات سكان أو دخل أو حركة زوار، لذلك الكثافة المنخفضة وحدها لا تعني فرصة استثمارية.'
-].map(t=>`<li>${t}</li>`).join('');
+function renderNotes(){
+  const m={b:NF(M.src_both),o:NF(M.src_overture),s:NF(M.src_osm),c:M.chain_min,k:NF(M.known_brand_cafes)};
+  document.getElementById('notes').innerHTML = L[lang].nt.map(f=>`<li>${f(m)}</li>`).join('');
+}
 
 // ---------- tooltip ----------
 const tip=document.getElementById('tip');
@@ -300,7 +352,7 @@ function polyFill(P){
 function updateScale(){
   const box=document.getElementById('scalebox');
   box.style.display=layer==='none'?'none':'block';
-  document.getElementById('scalelbl').textContent=layer==='density'?'لون الحي = الكثافة (الأحياء الصغيرة بالرمادي)':'لون الحي = عدد المقاهي';
+  document.getElementById('scalelbl').textContent=layer==='density'?T('scl1'):T('scl2');
 }
 
 // view: centre in world units (0..256 at zoom 0) and a fractional zoom level
@@ -379,7 +431,7 @@ function drawPolys(){
       if(!visible(P.b)) continue;
       if((sx(P.b[2])-sx(P.b[0]))<58) continue;
       const x=sx(P.c[0]),y=sy(P.c[1]);if(x<0||x>W||y<0||y>H)continue;
-      const name=D[P.d].ar;
+      const name=dn(D[P.d]);
       ctx.strokeStyle='rgba(255,253,249,.92)';ctx.strokeText(name,x,y);
       ctx.fillStyle='#2B1B14';ctx.fillText(name,x,y);
     }
@@ -427,11 +479,11 @@ cv.addEventListener('pointermove',e=>{
   }
   let best=-1,bd=110;
   (draw.on||[]).forEach(i=>{const dx=sx(PX[i])-mx,dy=sy(PY[i])-my,dd=dx*dx+dy*dy;if(dd<bd){bd=dd;best=i;}});
-  if(best>=0){const c=C[best];showTip(e,`<b>${esc(c[0])}</b><br>${esc(D[c[3]].ar)}<br>${c[4]?'سلسلة':'مستقل'}`);
+  if(best>=0){const c=C[best];showTip(e,`<b>${esc(c[0])}</b><br>${esc(dn(D[c[3]]))}<br>${c[4]?T('chain'):T('indie')}`);
     if(hoverP){hoverP=null;draw();} cv.style.cursor='default';return;}
   const P=polyAt((mx-W/2)/S+view.cx,(my-H/2)/S+view.cy);
   if(P!==hoverP){hoverP=P;draw();}
-  if(P){const d=D[P.d];showTip(e,`<b>${esc(d.ar)}</b><br>${NF(d.cafes)} مقهى · ${fix1(d.area)} كم²<br>كثافة ${fix1(d.density)} (اضغطي للتصفية)`);cv.style.cursor='pointer';}
+  if(P){const d=D[P.d];showTip(e,`<b>${esc(dn(d))}</b><br>${T('tipS',NF(d.cafes),fix1(d.area))}<br>${T('tipD',fix1(d.density))} (${T('tipClick')})`);cv.style.cursor='pointer';}
   else{hideTip();cv.style.cursor='grab';}
 });
 cv.addEventListener('pointerleave',()=>{hideTip();if(hoverP){hoverP=null;draw();}});
@@ -443,11 +495,15 @@ document.querySelectorAll('#layerseg button').forEach(b=>b.onclick=()=>{
 
 // ---------- filters ----------
 const dsel=document.getElementById('dsel');
-dsel.innerHTML='<option value="all">كل الأحياء</option>'+D.map((d,i)=>({d,i})).sort((a,b)=>a.d.ar.localeCompare(b.d.ar,'ar')).map(o=>`<option value="${o.i}">${esc(o.d.ar)} (${NF(o.d.cafes)})</option>`).join('');
+function fillDsel(){
+  const cur=dsel.value||'all';
+  dsel.innerHTML=`<option value="all">${T('all')}</option>`+D.map((d,i)=>({d,i})).sort((a,b)=>dn(a.d).localeCompare(dn(b.d),lang)).map(o=>`<option value="${o.i}">${esc(dn(o.d))} (${NF(o.d.cafes)})</option>`).join('');
+  dsel.value=cur;
+}
 function applyFilters(refit){
   const idxs=[];C.forEach((c,i)=>{if(matches(c))idxs.push(i);});
-  document.getElementById('cnt').textContent=`${NF(idxs.length)} مقهى مطابق`;
-  document.getElementById('results').innerHTML=idxs.slice(0,40).map(i=>`<div class="res" data-i="${i}">${esc(C[i][0])}<small>${esc(D[C[i][3]].ar)} · ${C[i][4]?'سلسلة':'مستقل'}</small></div>`).join('');
+  document.getElementById('cnt').textContent=T('cnt',NF(idxs.length));
+  document.getElementById('results').innerHTML=idxs.slice(0,40).map(i=>`<div class="res" data-i="${i}">${esc(C[i][0])}<small>${esc(dn(D[C[i][3]]))} · ${C[i][4]?T('chain'):T('indie')}</small></div>`).join('');
   document.querySelectorAll('.res').forEach(r=>r.onclick=()=>{
     active=+r.dataset.i;view.cx=PX[active];view.cy=PY[active];view.z=Math.max(view.z,15);draw();});
   if(refit){
@@ -462,7 +518,19 @@ dsel.onchange=()=>{filt.d=dsel.value;active=null;applyFilters(true);};
 document.querySelectorAll('#typeseg button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#typeseg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');filt.t=b.dataset.t;active=null;applyFilters(false);});
 new ResizeObserver(()=>{resize();draw();}).observe(document.getElementById('mapwrap'));
-updateScale();resize();fitPoints(null);applyFilters(false);
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.title=T('h1');
+  document.querySelectorAll('[data-tx]').forEach(e=>{e.textContent=T(e.dataset.tx);});
+  document.querySelectorAll('[data-ph]').forEach(e=>{e.placeholder=T(e.dataset.ph);});
+  document.getElementById('zreset').title=T('reset');
+  document.getElementById('lang').textContent=T('btn');
+  document.getElementById('foot');
+  renderTop();renderBars();renderChains();renderScatter();renderTable();renderNotes();fillDsel();updateScale();
+  applyFilters(false);
+}
+document.getElementById('lang').onclick=()=>{lang=lang==='ar'?'en':'ar';try{localStorage.setItem('cmlang',lang);}catch(e){}applyLang();};
+resize();fitPoints(null);applyLang();
 </script>
 </body>
 </html>
